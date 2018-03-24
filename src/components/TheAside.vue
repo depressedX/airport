@@ -7,8 +7,8 @@
             <a href="/" style="display: inline-block">
                 <el-button type="primary" style="width: 100%;margin-bottom: 1em">进近流量预测</el-button>
             </a>
-            <a href="/" style="display: inline-block">
-                <el-button type="success"  style="width: 100%">退出登录</el-button>
+            <a href="/logout" style="display: inline-block">
+                <el-button type="danger"  style="width: 100%">退出登录</el-button>
             </a>
         </div>
     </div>
@@ -35,6 +35,7 @@
     .the-aside{
         background-color: rgb(238,226,226);
         height: 100%;
+        text-align: center;
     }
     .button-group{
         display: flex;

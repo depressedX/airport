@@ -1,12 +1,55 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import http from 'axios'
 
 Vue.use(Vuex)
+
+let removeUnusedProperties = v => ({
+    minutes: v.minutes,
+    interval: v.interval,
+    direction: v.direction,
+    // 航班号
+    arcid: v.arcid,
+    // 目的机场
+    ades: v.ades,
+    // 起飞机场
+    adep: v.adep,
+    // 状态
+    status: v.status,
+    // 实际起飞时间
+    // 预落时间
+    // 进入时间
+    // 离开时间
+    // 剩余时间
+    // 预起时间
+    // 进入时间
+})
+
+function filterByDirection(direction) {
+    return v => v.direction === direction
+}
 
 
 export default new Vuex.Store({
     state: {
-        username:'jinjin',
+        username: 'jinjin',
+
+        // 表格数据状态
+        dataState: {
+            isFly: true,
+            duration: 3,
+            step: 5,
+            // 进港 出港 进出港
+            dataType: 1,
+            // 当前跑道号
+            trackId: 1,
+
+            // 所有跑道
+            trackIds: [1, 19],
+            LEAVE: 0,
+            ENTER: 1,
+            BOTH: 2
+        },
 
         "JNowTime": 1521780180539,
         "enterPorts": [
@@ -1053,8 +1096,56 @@ export default new Vuex.Store({
                 "eta": 1521796800000
             }
         ],
-        "nowTime": "2018-03-23 12:43"
     },
-    mutations: {},
-    actions: {}
+    getters: {
+        now: state => state.JNowTime,
+
+        // 进出港数据
+        enterPortData: state => state.enterPorts,
+        leavePortData: state => state.leavePorts,
+        // 出港飞机  方向 北
+        leavePortN: (state, getters) => getters.leavePortData.filter(filterByDirection('N')),
+        // 进港飞机  方向 北
+        enterPortN: (state, getters) => getters.enterPortData.filter(filterByDirection('N')),
+        // 出港飞机  方向 南
+        leavePortS: (state, getters) => getters.leavePortData.filter(filterByDirection('S')),
+        // 进港飞机  方向 南
+        enterPortS: (state, getters) => getters.enterPortData.filter(filterByDirection('S')),
+        // 出港飞机  方向 西
+        leavePortW: (state, getters) => getters.leavePortData.filter(filterByDirection('W')),
+        // 进港飞机  方向 西
+        enterPortW: (state, getters) => getters.enterPortData.filter(filterByDirection('W')),
+        // 出港飞机  方向 东
+        leavePortE: (state, getters) => getters.leavePortData.filter(filterByDirection('E')),
+        // 进港飞机  方向 东
+        enterPortE: (state, getters) => getters.enterPortData.filter(filterByDirection('E')),
+
+
+    },
+    mutations: {
+        changeDataType(state, type) {
+            state.dataState.dataType = type
+        },
+        changeTrackId(state, id) {
+            state.dataState.trackId = id
+        },
+        changeIsFly(state, v) {
+            state.dataState.isFly = v
+        },
+        changeDuration(state, duration) {
+            state.dataState.duration = duration
+        },
+        changeStep(state, step) {
+            state.dataState.step = step
+        },
+    },
+    actions: {
+        refreshAllData({state}) {
+            return http.get('/api/getAll').then((data) => {
+                state.JNowTime = data.JNowTime
+                state.enterPorts = data.enterPorts
+                state.leavePorts = data.leavePorts
+            })
+        }
+    }
 })
