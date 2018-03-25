@@ -1,4 +1,11 @@
+
 {
+  "trackId":1 // 19  null
+}
+
+{
+  "trackId" :1, // 19
+  "status":0, //  1
   "JNowTime": 1521780180539,
   "enterPorts": [
     {
