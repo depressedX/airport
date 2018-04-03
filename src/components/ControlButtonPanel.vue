@@ -1,9 +1,7 @@
 <template>
     <div class="control-button-panel">
         <div class="row row-1" style="margin-left: .5em">
-            <el-button :type="dataType===ENTER?'success':''" @click="changeDataType(ENTER)">进港表</el-button>
-            <el-button :type="dataType===LEAVE?'success':''" @click="changeDataType(LEAVE)">出港表</el-button>
-            <el-button :type="dataType===BOTH?'success':''" @click="changeDataType(BOTH)">出港进港表</el-button>
+            <data-type-control-button-panel/>
         </div>
         <div class="row row-2">
             <el-select @change="changeTrackId" :value="trackId" placeholder="选择跑道" style="width: 8em;margin: 0 .5em">
@@ -56,8 +54,13 @@
     let state = store.state,
         getters = store.getters
 
+    import DataTypeControlButtonPanel from './DataTypeControlButtonPanel'
+
     export default {
         name: "control-button-panel",
+        components:{
+            DataTypeControlButtonPanel
+        },
         data() {
             return {
             }
@@ -68,18 +71,14 @@
             isFly:()=>state.dataState.isFly,
             duration:()=>state.dataState.duration,
             step:()=>state.dataState.step,
-            dataType:()=>state.dataState.dataType,
-
-            ENTER:()=>state.dataState.ENTER,
-            LEAVE:()=>state.dataState.LEAVE,
-            BOTH:()=>state.dataState.BOTH,
         },
         methods:{
-            changeDataType(type){
-                store.commit('changeDataType',type)
-            },
             changeTrackId(id){
-                store.commit('changeTrackId',id)
+                store.dispatch('refreshAllData',id).then(trackId=>{
+                    this.$alert(`跑道号修改为 ${trackId}`)
+                },error=>{
+                    this.$alert(`修改失败`)
+                })
             },
             changeIsFly(v){
                 store.commit('changeIsFly',v)

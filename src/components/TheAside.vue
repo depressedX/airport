@@ -4,9 +4,12 @@
         <p class="time">{{time}}</p>
         <p class="username">{{username}}</p>
         <div class="button-group">
-            <a href="/" style="display: inline-block">
-                <el-button type="primary" style="width: 100%;margin-bottom: 1em">进近流量预测</el-button>
-            </a>
+            <router-link to="/prediction" style="display: inline-block;margin-bottom: .5em">
+                <el-button type="primary"  style="width: 100%">进近流量预测</el-button>
+            </router-link>
+            <router-link to="/statistics" style="display: inline-block;margin-bottom: 1em">
+                <el-button type="primary"  style="width: 100%">进近流量统计</el-button>
+            </router-link>
             <a href="/logout" style="display: inline-block">
                 <el-button type="danger"  style="width: 100%">退出登录</el-button>
             </a>

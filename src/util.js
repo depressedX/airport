@@ -11,6 +11,6 @@ export const Formatter = {
         if (!(d instanceof Date)) {
             d = new Date(d)
         }
-        return `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`
+        return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
     }
 }
