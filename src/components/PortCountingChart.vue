@@ -8,8 +8,6 @@
     import {Formatter} from "../util"
     import store from '../store/store'
 
-    let state = store.state,
-        getters = store.getters
 
     export default {
         name: "port-counting-chart",
@@ -31,13 +29,27 @@
             }
         },
         data() {
+            let that = this
             return {
                 chart: null,
+                mapedEnterData: {num: [], content: []},
+                mapedLeaveData: {num: [], content: []},
                 option: {
+                    legend:{
+                        show:true
+                    },
                     tooltip: {
+                        axisPointer: {
+                            type: 'cross'
+                        },
                         trigger: 'axis',
                         formatter(params, ticket) {
-                            return `${params[0].axisValue}后<br>` + params.map(v => `${v.seriesName}:${v.data}`).join('<br>')
+
+                            return `${params[0].axisValue}后<br>`
+                                + params.map(
+                                    v => `${v.seriesName}:${v.data}<br>${(v.seriesName === '进港' ? that.mapedEnterData : that.mapedLeaveData).content[v.dataIndex].join('<br>')}`
+                                )
+                                    .join('<br>')
                         }
                     },
                     grid: {
@@ -56,7 +68,6 @@
                             type: 'category',
                             boundaryGap: false,
                             data: [],
-                            interval: 1,
                             axisLabel: {
                                 show: true,
                                 rotate: 30,
@@ -67,10 +78,10 @@
                     yAxis: [
                         {
                             type: 'value',
-                            splitNumber: 2,
+                            boundaryGap: false,
                             min: 0,
                             max: 20,
-                            interval: 1,
+                            interval:1,
                             axisLabel: {
                                 show: true,
                                 interval: 0,
@@ -84,13 +95,17 @@
                             name: '出港',
                             type: this.type,
                             stack: this.type + (this.type === 'bar' ? '' : '1'),
-                            data: []
+                            get data() {
+                                return that.dataType === that.ENTER ? [] : that.mapedLeaveData.num
+                            }
                         },
                         {
                             name: '进港',
                             type: this.type,
                             stack: this.type + (this.type === 'bar' ? '' : '2'),
-                            data: [],
+                            get data() {
+                                return that.dataType === that.LEAVE ? [] : that.mapedEnterData.num
+                            }
                         }
                     ],
 
@@ -117,24 +132,32 @@
                 return axisXList
             },
 
+            // 将飞行数据按duration和step映射到X轴上   返回{num:[],content:[]}
+            mapPortData(arr) {
+                let res = {num: [], content: []}
+                for (let i = 0; i < Math.floor(this.duration * 60 / this.step) + 1; i++) {
+                    res.num[i] = 0
+                    res.content[i] = []
+                }
+                arr.forEach(v => {
+                    let startIndex = Math.ceil((this.now + v.minutes * 60 * 1000 - this.timeStart) / this.step / 60 / 1000),
+                        endIndex = Math.ceil((this.now + v.minutes * 60 * 1000 + v.interval * 60 * 1000 - this.timeStart) / this.step / 60 / 1000)
+                    startIndex = Math.max(startIndex, 0)
+                    endIndex = Math.min(endIndex, Math.floor(this.duration * 60 / this.step) + 1)
+                    for (let i = startIndex; i < endIndex; i++) {
+                        res.num[i]++
+                        res.content[i].push(v.arcid)
+                    }
+                })
+                return res
+            },
 
             // 更新this.option的series
             updateSeries() {
-                this.option.series.forEach(v => {
-                    if (v.name === '出港') {
-                        if (this.dataType === this.ENTER) {
-                            v.data = []
-                        } else {
-                            v.data = this.mapPortData(this.leavePortData)
-                        }
-                    } else if (v.name === '进港') {
-                        if (this.dataType === this.LEAVE) {
-                            v.data = []
-                        } else {
-                            v.data = this.mapPortData(this.enterPortData)
-                        }
-                    }
-                })
+                // 更新映射后的航班数
+                this.mapedEnterData = this.mapPortData(this.enterPortData)
+                this.mapedLeaveData = this.mapPortData(this.leavePortData)
+
 
                 // 更改当前时间显示轴
                 this.option.series[2] = {
@@ -154,69 +177,61 @@
                     }
                 }
                 this.chart.setOption(this.option)
-            },
+            }
+            ,
             // 更新this.option的X轴
             updateAxisX() {
                 let axisX = this.generalAxisXList()
                 this.option.xAxis[0].data = axisX
 
                 this.updateSeries()
-            },
+            }
+            ,
 
-            // 将飞行数据按duration和step映射到X轴上   返回数组
-            mapPortData(arr) {
-                let res = []
-                for (let i = 0; i < Math.floor(this.duration * 60 / this.step) + 1; i++) {
-                    res[i] = 0
-                }
-                arr.forEach(v => {
-                    let startIndex = Math.ceil((this.now + v.minutes * 60 * 1000 - this.timeStart) / this.step / 60 / 1000),
-                        endIndex = Math.ceil((this.now + v.minutes * 60 * 1000 + v.interval * 60 * 1000 - this.timeStart) / this.step / 60 / 1000)
-                    startIndex = Math.max(startIndex, 0)
-                    endIndex = Math.min(endIndex, Math.floor(this.duration * 60 / this.step) + 1)
-                    for (let i = startIndex; i < endIndex; i++) {
-                        res[i]++
-                    }
-                })
-                return res
-            },
 
         },
         computed: {
-            timeStart() {
-                return this.now - (new Date(this.now).getMinutes() % this.step) * 60 * 1000 - 60 * 60 * 1000
-            },
 
-            ...mapState({
-                step: state => state.dataState.step,
-                duration: state => state.dataState.duration,
-                dataType: state => state.dataState.dataType,
-                ENTER: state => state.dataState.ENTER,
-                LEAVE: state => state.dataState.LEAVE,
-                BOTH: state => state.dataState.BOTH,
-            }),
+            ...
+                mapState({
+                    step: state => state.dataState.step,
+                    duration: state => state.dataState.duration,
+                    dataType: state => state.dataState.dataType,
+                    ENTER: state => state.dataState.ENTER,
+                    LEAVE: state => state.dataState.LEAVE,
+                    BOTH: state => state.dataState.BOTH,
+                }),
 
-            ...mapGetters(['now', 'leavePortData', 'enterPortData']),
-        },
+            ...
+                mapGetters(['now', 'enterPortData', 'leavePortData', 'timeStart']),
+
+
+        }
+        ,
         watch: {
             // ENTER / LEAVE / BOTH
             dataType(v) {
                 this.updateSeries()
-            },
+            }
+            ,
             leavePortData() {
                 this.updateSeries()
-            },
+            }
+            ,
             enterPortData() {
                 this.updateSeries()
-            },
+            }
+            ,
 
             // 改变X轴必然要重新计算数据
             duration() {
                 this.updateAxisX()
-            },
+            }
+            ,
             step() {
                 this.updateAxisX()
-            },
+            }
+            ,
         }
     }
 </script>

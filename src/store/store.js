@@ -1,36 +1,26 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import http from 'axios'
+import {PermissionDenied, UnkownError} from "../errors";
 
 Vue.use(Vuex)
-
-let removeUnusedProperties = v => ({
-    minutes: v.minutes,
-    interval: v.interval,
-    direction: v.direction,
-    // 航班号
-    arcid: v.arcid,
-    // 目的机场
-    ades: v.ades,
-    // 起飞机场
-    adep: v.adep,
-    // 状态
-    status: v.status,
-    // 实际起飞时间
-    // 预落时间
-    // 进入时间
-    // 离开时间
-    // 剩余时间
-    // 预起时间
-    // 进入时间
-})
 
 function filterByDirection(direction) {
     return v => v.direction === direction
 }
 
+let handleRequestError = data => {
+    if (data.data.status === 1) {
+        throw new PermissionDenied('无权限')
+    } else if (data.data.status === 0) {
+        return data.data
+    } else {
+        throw new UnkownError('未知错误')
+    }
+}
 
-export default new Vuex.Store({
+
+let store = new Vuex.Store({
     state: {
         username: 'jinjin',
 
@@ -2142,8 +2132,8 @@ export default new Vuex.Store({
             }
         ],
         historyDataType: 2,
-        historyStart:1521680180539,
-        historyEnd:1521780180539
+        historyStart: 1521680180539,
+        historyEnd: 1521780180539
     },
     getters: {
         now: state => state.JNowTime,
@@ -2169,6 +2159,10 @@ export default new Vuex.Store({
         enterPortE: (state, getters) => getters.enterPortData.filter(filterByDirection('E')),
 
 
+        // 当前时间减去一小时 = 开始的时间
+        timeStart(state, getters) {
+            return getters.now - (new Date(getters.now).getMinutes() % state.dataState.step) * 60 * 1000 - 60 * 60 * 1000
+        },
     },
     mutations: {
         changeDataType(state, type) {
@@ -2188,34 +2182,43 @@ export default new Vuex.Store({
         },
         changeHistoryDataType(state, type) {
             state.historyDataType = type
+        },
+        test(state) {
+            state.enterPorts = state.enterPorts.slice(0, 5)
         }
     },
     actions: {
         refreshAllData({state}, trackId) {
-            return http.get('/api/getAll', {
+            return http.get('/jinjinr', {
                 params: {
                     trackId
                 }
-            }).then((data) => {
-                state.JNowTime = data.JNowTime
-                state.enterPorts = data.enterPorts
-                state.leavePorts = data.leavePorts
-                state.trackId = data.trackId
-                return state.trackId
             })
+                .then(handleRequestError)
+                .then((data) => {
+                    state.JNowTime = data.JNowTime
+                    state.enterPorts = data.enterPorts
+                    state.leavePorts = data.leavePorts
+                    state.dataState.trackId = data.trackId
+                    return state.dataState.trackId
+                })
         },
-        refreshHistoryData({state},payload) {
-            return http.get('/api/getAll',{
-                params:{
-                    start:payload.start,
-                    end:payload.end
+        refreshHistoryData({state}, payload) {
+            return http.get('/jinjin/history', {
+                params: {
+                    start: payload.start,
+                    end: payload.end
                 }
-            }).then((data) => {
-                state.enterHistory = data.enterHistory
-                state.leaveHistory = data.leaveHistory
-                state.historyStart = payload.start
-                state.historyEnd  = payload.end
             })
+                .then(handleRequestError)
+                .then((data) => {
+                    state.enterHistory = data.enterHistory
+                    state.leaveHistory = data.leaveHistory
+                    state.historyStart = payload.start
+                    state.historyEnd = payload.end
+                })
         },
     }
 })
+
+export default store

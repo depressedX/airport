@@ -31,18 +31,28 @@
             }
         },
         data() {
+            let that = this
             return {
                 chart: null,
+                mapedEnterData: {num: [], content: []},
+                mapedLeaveData: {num: [], content: []},
                 option: {
+                    legend:{
+                        show:true
+                    },
                     tooltip: {
+                        axisPointer: {
+                            type: 'cross'
+                        },
                         trigger: 'axis',
                         formatter(params, ticket) {
-                            return `${params[0].axisValue}后<br>` + params.map(v => `${v.seriesName}:${v.data}`).join('<br>')
+
+                            return `${params[0].axisValue}后<br>`
+                                + params.map(
+                                    v => `${v.seriesName}:${v.data}<br>${(v.seriesName === '进港' ? that.mapedEnterData : that.mapedLeaveData).content[v.dataIndex].join('<br>')}`
+                                )
+                                    .join('<br>')
                         }
-                    },
-                    legend: {
-                        data: ['预计航班'],
-                        left: 'left'
                     },
                     grid: {
                         left: '5%',
@@ -60,7 +70,6 @@
                             type: 'category',
                             boundaryGap: false,
                             data: [],
-                            interval: 1,
                             axisLabel: {
                                 show: true,
                                 rotate: 30,
@@ -73,8 +82,8 @@
                             type: 'value',
                             splitNumber: 2,
                             min: 0,
-                            max: 20,
-                            interval: 1,
+                            max: 200,
+                            interval: 20,
                             axisLabel: {
                                 show: true,
                                 interval: 0,
@@ -88,13 +97,17 @@
                             name: '出港',
                             type: this.type,
                             stack: this.type + (this.type === 'bar' ? '' : '1'),
-                            data: []
+                            get data() {
+                                return that.dataType === that.ENTER ? [] : that.mapedLeaveData.num
+                            }
                         },
                         {
                             name: '进港',
                             type: this.type,
                             stack: this.type + (this.type === 'bar' ? '' : '2'),
-                            data: [],
+                            get data() {
+                                return that.dataType === that.LEAVE ? [] : that.mapedEnterData.num
+                            }
                         }
                     ],
 
@@ -130,21 +143,10 @@
 
             // 更新this.option的series
             updateSeries() {
-                this.option.series.forEach(v => {
-                    if (v.name === '出港') {
-                        if (this.historyDataType === this.ENTER) {
-                            v.data = []
-                        } else {
-                            v.data = this.mapPortData(this.leaveHistory)
-                        }
-                    } else if (v.name === '进港') {
-                        if (this.historyDataType === this.LEAVE) {
-                            v.data = []
-                        } else {
-                            v.data = this.mapPortData(this.enterHistory)
-                        }
-                    }
-                })
+
+                // 更新映射后的航班数
+                this.mapedEnterData = this.mapPortData(this.enterHistory)
+                this.mapedLeaveData = this.mapPortData(this.leaveHistory)
 
                 this.chart.setOption(this.option)
             },
@@ -158,9 +160,10 @@
 
             // 将飞行数据按duration和step映射到X轴上   返回数组
             mapPortData(arr) {
-                let res = []
+                let res = {num:[],content:[]}
                 for (let i = 0; i < Math.floor((this.roundedTimeEnd - this.roundedTimeStart) / this.step/60/1000) + 1; i++) {
-                    res[i] = 0
+                    res.num[i] = 0
+                    res.content[i] = []
                 }
                 arr.forEach(v => {
                     let startIndex = Math.ceil((v.pass1 - this.roundedTimeStart) / this.step / 60 / 1000),
@@ -168,7 +171,8 @@
                     startIndex = Math.max(startIndex, 0)
                     endIndex = Math.min(endIndex, Math.floor((this.roundedTimeEnd - this.roundedTimeStart) / this.step / 60 / 1000) + 1)
                     for (let i = startIndex; i < endIndex; i++) {
-                        res[i]++
+                        res.num[i]++
+                        res.content[i].push(v.arcid)
                     }
                 })
                 return res

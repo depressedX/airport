@@ -30,6 +30,7 @@
     import DirectionImg from '../components/DirectionImg'
     import EnterPortTable from '../components/EnterPortTable'
     import LeavePortTable from '../components/LeavePortTable'
+    import {PermissionDenied} from "../errors";
 
     import store from '../store/store'
 
@@ -39,7 +40,14 @@
     export default {
         name: "predictions",
         created(){
-            store.dispatch('refreshAllData')
+            store.dispatch('refreshAllData').catch(error=>{
+                console.log(error)
+                if (error instanceof PermissionDenied){
+                    this.$router.push('/permissionDenied')
+                }else {
+                    this.$alert(error.message)
+                }
+            })
         },
         components:{
             ControlButtonPanel,
