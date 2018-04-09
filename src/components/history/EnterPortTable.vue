@@ -51,7 +51,7 @@
                     label="离开时间"
                     sortable>
                 <template slot-scope="scope">
-                    {{scope.row.pass2?scope.row.pass2:'' | time}}
+                    {{scope.row.ata?scope.row.ata:'' | time}}
                 </template>
             </el-table-column>
         </el-table>

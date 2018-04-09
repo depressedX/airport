@@ -35,12 +35,12 @@
                 mapedEnterData: {num: [], content: []},
                 mapedLeaveData: {num: [], content: []},
                 option: {
-                    legend:{
-                        show:true
+                    legend: {
+                        show: true
                     },
                     tooltip: {
                         axisPointer: {
-                            type: 'cross'
+                            type: 'cross',
                         },
                         trigger: 'axis',
                         formatter(params, ticket) {
@@ -75,21 +75,35 @@
                             }
                         }
                     ],
-                    yAxis: [
-                        {
-                            type: 'value',
-                            boundaryGap: false,
-                            min: 0,
-                            max: 20,
-                            interval:1,
-                            axisLabel: {
-                                show: true,
-                                interval: 0,
-                                rotate: 0,
-                                margin: 10,
+                    yAxis: that.type === 'line' ?
+                        [
+                            {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: Array.from({length: 20}).map((v, i) => i),
+                                axisLabel: {
+                                    show: true,
+                                    interval: 0,
+                                    rotate: 0,
+                                    margin: 10,
+                                }
                             }
-                        }
-                    ],
+                        ] :
+                        [
+                            {
+                                type: 'value',
+                                boundaryGap: false,
+                                min: 0,
+                                max: 20,
+                                interval: 1,
+                                axisLabel: {
+                                    show: true,
+                                    interval: 0,
+                                    rotate: 0,
+                                    margin: 10,
+                                }
+                            }
+                        ],
                     series: [
                         {
                             name: '出港',

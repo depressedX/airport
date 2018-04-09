@@ -34,7 +34,7 @@
                     label="进入时间"
                     sortable>
                 <template slot-scope="scope">
-                    {{scope.row.pass1?scope.row.pass1:'' | time}}
+                    {{scope.row.atd?scope.row.atd:'' | time}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -42,7 +42,7 @@
                     label="离开时间"
                     sortable>
                 <template slot-scope="scope">
-                    {{scope.row.pass2?scope.row.pass2:'' | time}}
+                    {{scope.row.atd?scope.row.atd+7*60*1000:'' | time}}
                 </template>
             </el-table-column>
         </el-table>

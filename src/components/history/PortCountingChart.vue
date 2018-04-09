@@ -77,21 +77,35 @@
                             }
                         }
                     ],
-                    yAxis: [
-                        {
-                            type: 'value',
-                            splitNumber: 2,
-                            min: 0,
-                            max: 200,
-                            interval: 20,
-                            axisLabel: {
-                                show: true,
-                                interval: 0,
-                                rotate: 0,
-                                margin: 10,
+                    yAxis: that.type === 'line' ?
+                        [
+                            {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: Array.from({length: 201}).map((v, i) => i),
+                                axisLabel: {
+                                    show: true,
+                                    interval: 19,
+                                    rotate: 0,
+                                    margin: 10,
+                                }
                             }
-                        }
-                    ],
+                        ] :
+                        [
+                            {
+                                type: 'value',
+                                splitNumber: 2,
+                                min: 0,
+                                max: 200,
+                                interval: 20,
+                                axisLabel: {
+                                    show: true,
+                                    interval: 0,
+                                    rotate: 0,
+                                    margin: 10,
+                                }
+                            }
+                        ],
                     series: [
                         {
                             name: '出港',
@@ -145,8 +159,8 @@
             updateSeries() {
 
                 // 更新映射后的航班数
-                this.mapedEnterData = this.mapPortData(this.enterHistory)
-                this.mapedLeaveData = this.mapPortData(this.leaveHistory)
+                this.mapedEnterData = this.mapPortData(this.enterHistory,this.ENTER)
+                this.mapedLeaveData = this.mapPortData(this.leaveHistory,this.LEAVE)
 
                 this.chart.setOption(this.option)
             },
@@ -158,16 +172,33 @@
                 this.updateSeries()
             },
 
+            getInterval(v,dataType){
+                if (dataType===this.ENTER){
+                    return{
+                        left:v.pass1,
+                        right:v.ata
+                    }
+                }else if (dataType === this.LEAVE){
+                    return{
+                        left:v.atd,
+                        right:v.atd+7*60*1000
+                    }
+                }else {
+                    throw new Error('wrong dataType')
+                }
+            },
+
             // 将飞行数据按duration和step映射到X轴上   返回数组
-            mapPortData(arr) {
+            mapPortData(arr,dataType) {
                 let res = {num:[],content:[]}
                 for (let i = 0; i < Math.floor((this.roundedTimeEnd - this.roundedTimeStart) / this.step/60/1000) + 1; i++) {
                     res.num[i] = 0
                     res.content[i] = []
                 }
                 arr.forEach(v => {
-                    let startIndex = Math.ceil((v.pass1 - this.roundedTimeStart) / this.step / 60 / 1000),
-                        endIndex = Math.ceil((v.pass2 - this.roundedTimeStart) / this.step / 60 / 1000)
+                    let interval = this.getInterval(v,dataType)
+                    let startIndex = Math.ceil((interval.left - this.roundedTimeStart) / this.step / 60 / 1000),
+                        endIndex = Math.ceil((interval.right - this.roundedTimeStart) / this.step / 60 / 1000)
                     startIndex = Math.max(startIndex, 0)
                     endIndex = Math.min(endIndex, Math.floor((this.roundedTimeEnd - this.roundedTimeStart) / this.step / 60 / 1000) + 1)
                     for (let i = startIndex; i < endIndex; i++) {
