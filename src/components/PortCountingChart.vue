@@ -15,8 +15,11 @@
             chartSize: {
                 type: Object,
                 default: () => ({
-                    width: '1260px',
-                    height: '625px'
+                    // width: '1260px',
+                    // height: '625px'
+                    // 使用原网站的尺寸
+                    width:'943px',
+                    height:'500px'
                 })
             },
             // 图表类型  line  bar
@@ -36,7 +39,8 @@
                 mapedLeaveData: {num: [], content: []},
                 option: {
                     legend: {
-                        show: true
+                        show: true,
+                        left:'left'
                     },
                     tooltip: {
                         axisPointer: {

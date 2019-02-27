@@ -2,36 +2,49 @@
         <el-table
                 :data="leavePortData"
                 :row-class-name="tableRowClassName"
-                class="el-table"
-                :default-sort = "{prop: 'minutes', order: 'ascending'}">
+                class="customLeaveTable"
+                :default-sort = "{prop: 'minutes', order: 'ascending'}"
+                header-cell-class-name="custom-header-cell"
+                cell-class-name="custom-cell">
             <el-table-column
                     prop="arcid"
                     label="航班号"
+                    width="110"
+                    class-name="custom-column-arcid"
                     sortable/>
             <el-table-column
                     prop="adep"
                     label="起飞机场"
+                    width="80"
                     sortable/>
             <el-table-column
                     prop="ades"
                     label="目的机场"
+                    width="80"
                     sortable/>
             <el-table-column
                     prop="status"
                     label="状态"
+                    class-name="custom-column-status"
+                    align="center"
+                    width="65"
                     sortable/>
             <el-table-column
                     prop="eobt"
                     label="预起时间"
+                    class-name="custom-column-eobt"
+                    width="120"
+                    align="center"
                     sortable>
                 <template slot-scope="scope">
+                    {{scope.row.eobt?scope.row.eobt:'' | date}}<br>
                     {{scope.row.eobt?scope.row.eobt:'' | time}}
                 </template>
             </el-table-column>
             <el-table-column
                     prop="atd"
-                    label="实际起飞时间"
-                    width="150"
+                    label="实飞时间"
+                    width="60"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.atd?scope.row.atd:'' | time}}
@@ -40,6 +53,7 @@
             <el-table-column
                     prop="pass1"
                     label="进入时间"
+                    width="60"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.pass1?scope.row.pass1:'' | time}}
@@ -48,6 +62,7 @@
             <el-table-column
                     prop="pass2"
                     label="离开时间"
+                    width="60"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.pass2?scope.row.pass2:'' | time}}
@@ -56,6 +71,7 @@
             <el-table-column
                     prop="minutes"
                     label="剩余时间"
+                    width="60"
                     sortable/>
         </el-table>
 </template>
@@ -82,16 +98,44 @@
             leavePortData: () => getters.leavePortData
         },
         filters: {
-            time: value => (typeof value === 'number' || value instanceof Number) ? Formatter.formatTime(value) : value
+            time: value => (typeof value === 'number' || value instanceof Number) ? Formatter.formatTime(value) : value,
+            date: value => (typeof value === 'number' || value instanceof Number) ? Formatter.formatDate(value) : value,
         }
     }
 </script>
 <style>
-    .el-table .row-danger {
+    .customLeaveTable{
+        font-size: 20px;
+        color: #3d3d3d;
+    }
+    .customLeaveTable thead{
+        color: #3d3d3d;
+    }
+    .customLeaveTable .row-danger {
         background-color: rgb(242, 222, 222);
     }
 
-    .el-table .row-normal {
+    .customLeaveTable .row-normal {
         background-color: rgb(223, 240, 216);
+    }
+    .customLeaveTable .custom-header-cell{
+        background-color: #99bfe6 !important;
+    }
+    .customLeaveTable .custom-cell .cell {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+    
+    /*需要加粗的列*/
+    .customLeaveTable .custom-column-arcid,.customLeaveTable .custom-column-status,
+    .customLeaveTable .custom-column-eobt{
+        font-weight: bold;
+    }
+    
+    .customLeaveTable .descending .sort-caret.descending {
+        border-top-color: #3d3d3d;
+    }
+    .customLeaveTable .ascending .sort-caret.ascending {
+        border-bottom-color: #3d3d3d;
     }
 </style>

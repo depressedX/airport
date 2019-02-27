@@ -2,9 +2,10 @@
     <div class="prediction">
         <div class="row row-1">
             <control-button-panel/>
-            <direction-pie/>
+            <direction-pie class="direction-pie"/>
         </div>
-        <h1 class="row row-2">{{dataType===ENTER?'进港表':(dataType===LEAVE?'出港表':'进港出港表')}}(总数:{{dataNum}}个)</h1>
+        <h3 style="color: #d95459;font-size: 1.5em;margin:30px 0 0.7em 0;text-align: left;font-weight: 500;" 
+            class="row row-2">{{dataType===ENTER?'进港表':(dataType===LEAVE?'出港表':'进港出港表')}}(总数:{{dataNum}}个)</h3>
         <div class="row row-3">
             <line-port-counting-chart type="line"/>
         </div>
@@ -14,11 +15,9 @@
         <div class="row row-5">
             <direction-img/>
         </div>
-        <div class="row row-6" style="width: 1260px">
-            <enter-port-table v-if="dataType===ENTER||dataType===BOTH"/>
-        </div>
-        <div class="row row-7" style="width: 1260px;">
-            <leave-port-table v-if="dataType===LEAVE||dataType===BOTH"/>
+        <div class="row row-6 table-container">
+            <enter-port-table class="table-1" v-if="dataType===ENTER||dataType===BOTH"/>
+            <leave-port-table class="table-2" v-if="dataType===LEAVE||dataType===BOTH"/>
         </div>
     </div>
 </template>
@@ -80,9 +79,30 @@
 
 <style scoped>
 
-    .prediction > .row-1 {
-        display: flex;
-        justify-content: space-between;
+    .prediction{
+        position: relative;
     }
+    .prediction .direction-pie{
+        width: 45%;
+        height: 250px;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        background-color: transparent;
+    }
+    .prediction .table-container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin-top: 20px;
+    }
+    .prediction .table-container .table-1,.prediction .table-container .table-2{
+        /*flex: 1 1 48%;*/
+        flex: none;
+        margin: 0 10px;
+    }
+    
 
 </style>
