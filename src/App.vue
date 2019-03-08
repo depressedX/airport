@@ -1,6 +1,6 @@
 <template>
     <el-container id="app">
-        <el-aside width="200px">
+        <el-aside width="123px">
             <the-aside/>
         </el-aside>
         <el-main class="main">
@@ -25,7 +25,7 @@
 
 <style>
     #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        font-family: PingFang SC,  "Microsoft YaHei UI",Microsoft Yahei,  Tahoma, 华文细黑,"Microsoft JhengHei", sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;

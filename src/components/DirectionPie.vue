@@ -1,5 +1,5 @@
 <template>
-    <div id="direction-pie"></div>
+    <div id="direction-pie" style="width: 300px;height: 250px"></div>
 </template>
 
 <script>

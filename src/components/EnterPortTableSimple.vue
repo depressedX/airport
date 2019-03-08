@@ -10,20 +10,20 @@
             <el-table-column
                     prop="arcid"
                     label="航班号"
-                    min-width="110"
+                    min-width="80"
                     class-name="custom-column-arcid"
                     align="center"
                     sortable/>
             <el-table-column
                     prop="adep"
                     label="起飞机场"
-                    min-width="70"
+                    min-width="50"
                     align="center"
                     sortable/>
             <el-table-column
                     prop="ades"
                     label="目的机场"
-                    min-width="70"
+                    min-width="50"
                     align="center"
                     sortable/>
             <el-table-column
@@ -31,13 +31,13 @@
                     label="状态"
                     class-name="custom-column-status"
                     align="center"
-                    min-width="65"
+                    min-width="40"
                     sortable/>
             <el-table-column
                     prop="atd"
                     label="实际起飞时间"
                     class-name="custom-column-atd"
-                    min-width="60"
+                    min-width="40"
                     align="center"
                     sortable>
                 <template slot-scope="scope">
@@ -47,21 +47,11 @@
             <el-table-column
                     prop="eta"
                     label="预落时间"
-                    min-width="60"
+                    min-width="40"
                     align="center"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.eta?scope.row.eta:'' | time}}
-                </template>
-            </el-table-column>
-            <el-table-column
-                    prop="ata"
-                    label="实际降落时间"
-                    sortable
-                    align="center"
-                    width="60">
-                <template slot-scope="scope">
-                    {{scope.row.ata?scope.row.ata:'' | time}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -70,7 +60,7 @@
                     class-name="custom-column-pass1"
                     sortable
                     align="center"
-                    min-width="60">
+                    min-width="40">
                 <template slot-scope="scope">
                     {{scope.row.pass1?scope.row.pass1:'' | time}}
                 </template>
@@ -80,7 +70,7 @@
                     label="离开时间"
                     sortable
                     align="center"
-                    min-width="60">
+                    min-width="40">
                 <template slot-scope="scope">
                     {{scope.row.pass2?scope.row.pass2:'' | time}}
                 </template>
@@ -90,7 +80,7 @@
                     label="剩余时间"
                     sortable
                     align="center"
-                    min-width="40"/>
+                    min-width="30"/>
         </el-table>
 </template>
 
@@ -103,7 +93,7 @@
         getters = store.getters
 
     export default {
-        name: "enter-port-table",
+        name: "enter-port-table-simple",
 
         methods: {
             tableRowClassName(v) {
@@ -122,7 +112,7 @@
 </script>
 <style>
     .customEnterTable{
-        font-size: 18px;
+        font-size: 15px;
         color: #3d3d3d;
     }
     .customEnterTable thead{
@@ -143,8 +133,8 @@
         padding-bottom: 4px;
     }
     .customEnterTable .custom-cell .cell{
-        padding-left: 4px;
-        padding-right: 4px;
+        padding-left: 0px;
+        padding-right: 0px;
     }
     .customEnterTable .custom-column-arcid,.customEnterTable .custom-column-status,
     .customEnterTable .custom-column-pass1,.customEnterTable .custom-column-atd{

@@ -9,31 +9,34 @@
             <el-table-column
                     prop="arcid"
                     label="航班号"
-                    width="110"
+                    min-width="110"
                     class-name="custom-column-arcid"
+                    align="center"
                     sortable/>
             <el-table-column
                     prop="adep"
                     label="起飞机场"
-                    width="80"
+                    min-width="70"
+                    align="center"
                     sortable/>
             <el-table-column
                     prop="ades"
                     label="目的机场"
-                    width="80"
+                    width="70"
+                    align="center"
                     sortable/>
             <el-table-column
                     prop="status"
                     label="状态"
                     class-name="custom-column-status"
                     align="center"
-                    width="65"
+                    min-width="65"
                     sortable/>
             <el-table-column
                     prop="eobt"
                     label="预起时间"
                     class-name="custom-column-eobt"
-                    width="120"
+                    min-width="120"
                     align="center"
                     sortable>
                 <template slot-scope="scope">
@@ -44,7 +47,8 @@
             <el-table-column
                     prop="atd"
                     label="实飞时间"
-                    width="60"
+                    min-width="60"
+                    align="center"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.atd?scope.row.atd:'' | time}}
@@ -53,7 +57,8 @@
             <el-table-column
                     prop="pass1"
                     label="进入时间"
-                    width="60"
+                    min-width="60"
+                    align="center"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.pass1?scope.row.pass1:'' | time}}
@@ -62,7 +67,8 @@
             <el-table-column
                     prop="pass2"
                     label="离开时间"
-                    width="60"
+                    min-width="60"
+                    align="center"
                     sortable>
                 <template slot-scope="scope">
                     {{scope.row.pass2?scope.row.pass2:'' | time}}
@@ -71,7 +77,8 @@
             <el-table-column
                     prop="minutes"
                     label="剩余时间"
-                    width="60"
+                    min-width="60"
+                    align="center"
                     sortable/>
         </el-table>
 </template>
@@ -105,7 +112,7 @@
 </script>
 <style>
     .customLeaveTable{
-        font-size: 20px;
+        font-size: 18px;
         color: #3d3d3d;
     }
     .customLeaveTable thead{
@@ -120,6 +127,11 @@
     }
     .customLeaveTable .custom-header-cell{
         background-color: #99bfe6 !important;
+    }
+
+    .customLeaveTable .custom-cell{
+        padding-top: 4px;
+        padding-bottom: 4px;
     }
     .customLeaveTable .custom-cell .cell {
         padding-left: 4px;

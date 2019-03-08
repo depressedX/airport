@@ -15,11 +15,9 @@
             chartSize: {
                 type: Object,
                 default: () => ({
-                    // width: '1260px',
-                    // height: '625px'
                     // 使用原网站的尺寸
-                    width:'943px',
-                    height:'500px'
+                    width: '90%',
+                    height: '500px'
                 })
             },
             // 图表类型  line  bar
@@ -40,7 +38,7 @@
                 option: {
                     legend: {
                         show: true,
-                        left:'left'
+                        left: 'left'
                     },
                     tooltip: {
                         axisPointer: {
@@ -143,7 +141,8 @@
             generalAxisXList() {
                 let axisXList = []
                 let startTime = this.timeStart
-                let allSteps = Math.floor(this.duration * 60 / this.step) + 1
+                // 注意这里duration+1 总时间是指当前时间转换后的时间长度
+                let allSteps = Math.floor((this.duration + 1) * 60 / this.step) + 1
                 for (let curTime = startTime, i = 0; i < allSteps; i++, curTime += this.step * 60 * 1000) {
                     axisXList.push(Formatter.formatTime(curTime))
                 }
@@ -153,7 +152,7 @@
             // 将飞行数据按duration和step映射到X轴上   返回{num:[],content:[]}
             mapPortData(arr) {
                 let res = {num: [], content: []}
-                for (let i = 0; i < Math.floor(this.duration * 60 / this.step) + 1; i++) {
+                for (let i = 0; i < Math.floor((this.duration+1) * 60 / this.step) + 1; i++) {
                     res.num[i] = 0
                     res.content[i] = []
                 }
@@ -161,7 +160,7 @@
                     let startIndex = Math.ceil((this.now + v.minutes * 60 * 1000 - this.timeStart) / this.step / 60 / 1000),
                         endIndex = Math.ceil((this.now + v.minutes * 60 * 1000 + v.interval * 60 * 1000 - this.timeStart) / this.step / 60 / 1000)
                     startIndex = Math.max(startIndex, 0)
-                    endIndex = Math.min(endIndex, Math.floor(this.duration * 60 / this.step) + 1)
+                    endIndex = Math.min(endIndex, Math.floor((this.duration+1) * 60 / this.step) + 1)
                     for (let i = startIndex; i < endIndex; i++) {
                         res.num[i]++
                         res.content[i].push(v.arcid)
@@ -185,10 +184,10 @@
                         data: [
                             [{
                                 name: Formatter.formatTime(this.now),
-                                x: 5 + (this.now - this.timeStart) / (this.duration * 60 * 60 * 1000) * 100 * .9 + '%',
+                                x: 5 + (this.now - this.timeStart) / ((this.duration + 1) * 60 * 60 * 1000) * 100 * .9 + '%',
                                 y: '95%'
                             }, {
-                                x: 5 + (this.now - this.timeStart) / (this.duration * 60 * 60 * 1000) * 100 * .9 + '%',
+                                x: 5 + (this.now - this.timeStart) / ((this.duration + 1) * 60 * 60 * 1000) * 100 * .9 + '%',
                                 y: '25%'
                             }]
                         ]

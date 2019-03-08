@@ -1,8 +1,8 @@
 <template>
     <div class="data-type-control-button-panel">
-        <el-button :type="dataType===LEAVE?'success':'' "size="medium"  @click="changeDataType(LEAVE)">出港表</el-button>
-        <el-button :type="dataType===ENTER?'success':'' "size="medium"  @click="changeDataType(ENTER)">进港表</el-button>
-        <el-button :type="dataType===BOTH?'success':'' "size="medium"  @click="changeDataType(BOTH)">出港进港表</el-button>
+        <el-button size="medium"  @click="changeDataType(LEAVE)">出港表</el-button>
+        <el-button size="medium"  @click="changeDataType(ENTER)">进港表</el-button>
+        <el-button size="medium"  @click="changeDataType(BOTH)">出港进港表</el-button>
     </div>
 </template>
 
