@@ -1,5 +1,6 @@
 <template>
     <div class="direction-img" :style="{
+        margin:'auto',
         width: '839px',
         height: '514px',
         'background-image':`url(${baseImg})`}">
@@ -43,10 +44,10 @@
         mounted() {
         },
         computed: {
-            dataType:()=>state.dataState.dataType,
-            ENTER:()=>state.dataState.ENTER,
-            LEAVE:()=>state.dataState.LEAVE,
-            BOTH:()=>state.dataState.BOTH,
+            dataType: () => state.dataState.dataType,
+            ENTER: () => state.dataState.ENTER,
+            LEAVE: () => state.dataState.LEAVE,
+            BOTH: () => state.dataState.BOTH,
 
             leaveECount: () => getters.leavePortE.length,
             leaveNCount: () => getters.leavePortN.length,
@@ -58,39 +59,39 @@
             enterSCount: () => getters.enterPortS.length,
             enterWCount: () => getters.enterPortW.length,
 
-            ECount(){
+            ECount() {
                 if (this.dataType === this.ENTER) {
                     return this.enterECount
-                } else if(this.dataType === this.LEAVE){
+                } else if (this.dataType === this.LEAVE) {
                     return this.leaveECount
-                }else {
+                } else {
                     return this.enterECount + this.leaveECount
                 }
             },
-            NCount(){
+            NCount() {
                 if (this.dataType === this.ENTER) {
                     return this.enterNCount
-                } else if(this.dataType === this.LEAVE){
+                } else if (this.dataType === this.LEAVE) {
                     return this.leaveNCount
-                }else {
+                } else {
                     return this.enterNCount + this.leaveNCount
                 }
             },
-            SCount(){
+            SCount() {
                 if (this.dataType === this.ENTER) {
                     return this.enterSCount
-                } else if(this.dataType === this.LEAVE){
+                } else if (this.dataType === this.LEAVE) {
                     return this.leaveSCount
-                }else {
+                } else {
                     return this.enterSCount + this.leaveSCount
                 }
             },
-            WCount(){
+            WCount() {
                 if (this.dataType === this.ENTER) {
                     return this.enterWCount
-                } else if(this.dataType === this.LEAVE){
+                } else if (this.dataType === this.LEAVE) {
                     return this.leaveWCount
-                }else {
+                } else {
                     return this.enterWCount + this.leaveWCount
                 }
             },

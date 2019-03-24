@@ -1,5 +1,5 @@
 <template>
-    <div class="prediction">
+    <div class="prediction" v-if="dataUpdated">
         <div class="row row-1">
             <control-button-panel/>
             <direction-pie class="direction-pie"/>
@@ -55,7 +55,11 @@
     export default {
         name: "predictions",
         created() {
-            store.dispatch('refreshAllData').catch(error => {
+            store.dispatch('refreshAllData')
+                .then(()=>{
+                    this.dataUpdated = true
+                })
+                .catch(error => {
                 if (error instanceof PermissionDenied) {
                     this.$router.push('/permissionDenied')
                 } else {
@@ -78,7 +82,9 @@
             return {
 
                 // 设置三个按钮独立控制表格的显示
-                showWhichTable: state.dataState.BOTH
+                showWhichTable: state.dataState.BOTH,
+                // 是否刷新了数据
+                dataUpdated:false
             }
         },
 

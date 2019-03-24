@@ -46,7 +46,7 @@
             </el-table-column>
             <el-table-column
                     prop="atd"
-                    label="实飞时间"
+                    label="实际起飞时间"
                     min-width="60"
                     align="center"
                     sortable>

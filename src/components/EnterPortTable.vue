@@ -19,7 +19,8 @@
                     label="起飞机场"
                     min-width="70"
                     align="center"
-                    sortable/>
+                    sortable>
+            </el-table-column>
             <el-table-column
                     prop="ades"
                     label="目的机场"

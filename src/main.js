@@ -10,10 +10,25 @@ import store from './store/store'
 
 Vue.config.productionTip = false
 
+import {onNowTimeChange} from "./store/updator";
+
+
 Vue.use(VueRouter)
 Vue.use(ElementUI);
-new Vue({
+let vue = new Vue({
     store,
     render: h => h(App),
-    router
+    router,
+    computed:{
+        now:()=>store.getters.now
+    },
+    watch:{
+        now:{
+            handler:function(){
+                onNowTimeChange()
+            },
+            immediate:true
+        }
+    }
 }).$mount('#app')
+

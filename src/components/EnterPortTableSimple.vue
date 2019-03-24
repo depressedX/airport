@@ -16,16 +16,22 @@
                     sortable/>
             <el-table-column
                     prop="adep"
-                    label="起飞机场"
                     min-width="50"
                     align="center"
-                    sortable/>
+                    sortable>
+                <template slot="header" slot-scope="scope">
+                    起飞<br/>机场
+                </template>
+            </el-table-column>
             <el-table-column
                     prop="ades"
-                    label="目的机场"
                     min-width="50"
                     align="center"
-                    sortable/>
+                    sortable>
+                <template slot="header" slot-scope="scope">
+                    目的<br/>机场
+                </template>
+            </el-table-column>
             <el-table-column
                     prop="status"
                     label="状态"
